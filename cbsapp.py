@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from flask import Flask, render_template, request, jsonify, session, url_for, flash, send_file, send_from_directory, make_response
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
@@ -29,6 +29,7 @@ from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 import logging
 import base64
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from cibil import cibil_regen
 
@@ -413,7 +414,7 @@ def workflow_submit():
             "parameter": parameter,
             "authority": authority,
             "created_by": session.get('username'),
-            "created_at": datetime.utcnow().isoformat() + "Z"
+            "created_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         }
         _, document_ref = firestore_db.collection('workflow_menu').add(entry)
         entry['id'] = document_ref.id
@@ -435,7 +436,7 @@ def workflow_entries():
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
     try:
         documents = firestore_db.collection('workflow_menu').where(
-            'created_by', '==', session.get('username')
+            filter=FieldFilter('created_by', '==', session.get('username'))
         ).stream()
         entries = []
         for document in documents:
@@ -619,7 +620,7 @@ def getAnswer():
                 cibil_res = "CLAPS id validated"
                 
             if(clap_id and lap_id):
-                req_time = datetime.utcnow()
+                req_time = datetime.now(timezone.utc)
                 cibil_res = cibil_regen(clap_id , lap_id, user_id, username, req_time)
                 
                 print("cibil_res----", cibil_res)
