@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBS – Workflow</title>
+    <link rel="stylesheet" href="../aiml11/static/fonts/stylesheet.css">
+    <link rel="stylesheet" href="../aiml11/static/css/document.css"/>
+    <link rel="stylesheet" href="../aiml11/static/css/stylesheet.css?v=6"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body class="workflow-page">
+<div class="container">
+    <div class="sidebar">
+        <a href="{{ url_for('admin_portal') }}" class="logo">
+            <img src="../aiml11/static/images/logo.png" alt="logo">
+        </a>
+        <div class="navRow">
+            <div class="menu-item">ADMIN PORTAL</div>
+            <div class="line_horizontal"></div>
+            <a class="workflow-tab" href="{{ url_for('workflow') }}">WORKFLOW</a>
+        </div>
+        <div class="line_horizontal"></div>
+    </div>
+
+    <div class="chatSec scrollElm">
+        <div class="headerWidget">
+            <div class="userCtrl">
+                <div class="avatarRow">
+                    <div class="icon">
+                        <img src="../aiml11/static/images/avatar.png" alt="avatar">
+                    </div>
+                    <div class="userName" id="username"></div>
+                </div>
+                <div class="logout" id="logout" data-url="{{ url_for('logout') }}">Logout</div>
+            </div>
+        </div>
+
+        <div class="workflow-content">
+            <div class="wf-toolbar">
+                <button class="btn-submit" id="btnShowForm">+ Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="user-data" data-json='{{ user_data | tojson | safe }}' hidden></div>
+<script src="../aiml11/static/js/workflow.js?v=8"></script>
+</body>
+</html>
